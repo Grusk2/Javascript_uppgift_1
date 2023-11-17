@@ -1,0 +1,44 @@
+   body {
+    display: flex;
+    justify-content: flex-start;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .item {
+    width: 150px;
+    height: 150px;
+    box-shadow: 50%;
+    border-radius: 10%;
+    position: absolute;
+  }
+
+  #restartBtn {
+    padding: 10px;
+    height: 80px;
+    width: 100px;
+    cursor: pointer;
+  }
+
+  #counter {
+
+    font-size: 20px;
+  }
+
+  .wrapper {
+    height: 100vh;
+    background-size: cover;
+    position: relative;
+    overflow: hidden;
+  }
+  .shadow {
+    position: absolute;
+    width: 200vw;
+    height: 200vh;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    background-image: radial-gradient(circle at center, transparent, #000 20%);
+    pointer-events: none;
+  }
+  
