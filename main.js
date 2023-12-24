@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const restartBtn = document.getElementById('restartBtn');
     const counterSpan = document.getElementById('count');
-    const items = ['item1', 'item2', 'item3'];
+    const items = ['item1', 'item2', 'item3', 'gameOverItem'];
     const flashlightRadius = 150;
     let collectedItems = parseInt(localStorage.getItem('collectedItems')) || 0;
   
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
       collectedItems = 0;
       updateCounter();
     });
-  
+
     // This clears the previous items
     function clearItems() {
       items.forEach(item => {
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const newItem = document.createElement('img');
         newItem.classList.add('item');
         newItem.setAttribute('id', item);
-        newItem.src = 'IMG/CHIP.PNG';
+        newItem.src = item === 'gameOverItem' ? 'IMG/Pringle.png' : 'IMG/CHIP.PNG';
         newItem.style.position = 'absolute';
   
         const x = Math.random() * (window.innerWidth - newItem.width);
@@ -40,7 +40,11 @@ document.addEventListener('DOMContentLoaded', function () {
         newItem.style.top = `${y}px`;
   
         newItem.addEventListener('click', function () {
-          collectItem(item);
+          if (item === 'gameOverItem') {
+            gameOver();
+          } else {
+            collectItem(item);
+          }
         });
   
         document.body.appendChild(newItem);
@@ -50,6 +54,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
     }
+
+    function gameOver() {
+      alert('Game Over!'); // You can replace this with your own game over logic
+      // Reset the game if needed
+      clearItems();
+      generateRandomItems();
+      collectedItems = 0;
+      updateCounter();
+    }
+    
   
     // This is the collection system
     function collectItem(item) {
