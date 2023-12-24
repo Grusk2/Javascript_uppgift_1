@@ -13,6 +13,10 @@
     position: absolute;
   }
 
+  .text {
+    justify-content: space-evenly;
+  }
+
   #restartBtn {
     padding: 10px;
     height: 80px;
@@ -38,7 +42,7 @@
     left: 50%;
     top: 50%;
     transform: translateX(-50%) translateY(-50%);
-    background-image: radial-gradient(circle at center, transparent, #000 20%);
+    background-image: radial-gradient(circle at center, transparent, #000 10%);
     pointer-events: none;
   }
   

@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
     const restartBtn = document.getElementById('restartBtn');
     const counterSpan = document.getElementById('count');
-    const items = ['item1', 'item2', 'item3', 'gameOverItem'];
+    const items = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6', 'item7', 'item8', 'gameOverItem'];
     const flashlightRadius = 150;
     let collectedItems = parseInt(localStorage.getItem('collectedItems')) || 0;
   
+    let itemPositions = [];
+
     // Restart button funtion
     restartBtn.addEventListener('click', function () {
       clearItems();
@@ -22,38 +24,70 @@ document.addEventListener('DOMContentLoaded', function () {
           localStorage.removeItem(item);
         }
       });
+
+      itemPositions = [];
     }
   
-    // randomized items
-    function generateRandomItems() {
-      items.forEach(item => {
-        const newItem = document.createElement('img');
-        newItem.classList.add('item');
-        newItem.setAttribute('id', item);
-        newItem.src = item === 'gameOverItem' ? 'IMG/Pringle.png' : 'IMG/CHIP.PNG';
-        newItem.style.position = 'absolute';
-  
-        const x = Math.random() * (window.innerWidth - newItem.width);
-        const y = Math.random() * (window.innerHeight - newItem.height);
-  
-        newItem.style.left = `${x}px`;
-        newItem.style.top = `${y}px`;
-  
-        newItem.addEventListener('click', function () {
-          if (item === 'gameOverItem') {
-            gameOver();
-          } else {
-            collectItem(item);
-          }
-        });
-  
-        document.body.appendChild(newItem);
-  
-        if (localStorage.getItem(item)) {
-          newItem.style.visibility = 'hidden';
+  // Randomized items
+  function generateRandomItems() {
+    const itemSize = 150; // Assuming a square item, adjust as needed
+    const minDistance = 50; // Adjust the minimum distance between items
+
+    // Define a collision detection function
+    const collisionDetected = (x, y, otherItems) => {
+      for (const otherItem of otherItems) {
+        const dx = x - otherItem.x;
+        const dy = y - otherItem.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < minDistance) {
+          return true; // Collision detected
+        }
+      }
+      return false; // No collision detected
+    };
+
+    // Loop through items array to generate random positions
+    items.forEach(item => {
+      let newItem;
+      let x, y;
+
+      // Generate a new position until no collision is detected
+      do {
+        x = Math.random() * (window.innerWidth - itemSize);
+        y = Math.random() * (window.innerHeight - itemSize);
+      } while (collisionDetected(x, y, itemPositions));
+
+      // Create the new item
+      newItem = document.createElement('img');
+      newItem.classList.add('item');
+      newItem.setAttribute('id', item);
+      newItem.src = item === 'gameOverItem' ? 'IMG/Pringle.png' : 'IMG/CHIP.PNG';
+      newItem.style.position = 'absolute';
+      newItem.style.left = `${x}px`;
+      newItem.style.top = `${y}px`;
+
+      // Add the click event listener
+      newItem.addEventListener('click', function () {
+        if (item === 'gameOverItem') {
+          gameOver();
+        } else {
+          collectItem(item);
         }
       });
-    }
+
+      // Append the new item to the document body
+      document.body.appendChild(newItem);
+
+      // Set visibility based on localStorage
+      if (localStorage.getItem(item)) {
+        newItem.style.visibility = 'hidden';
+      }
+
+      // Add the new item's position to the itemPositions array for collision detection
+      itemPositions.push({ x, y });
+    });
+  }
 
     function gameOver() {
       alert('Game Over!'); // You can replace this with your own game over logic
@@ -73,6 +107,14 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem(item, 'collected');
         collectedItems++;
         updateCounter();
+
+        const allItemsCollected = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6', 'item7', 'item8'].every(item =>
+          localStorage.getItem(item)
+        );
+
+        if (allItemsCollected) {
+          alert('You won!');
+        }
       }
     }
   
